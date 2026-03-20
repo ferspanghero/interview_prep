@@ -1,0 +1,58 @@
+# Candidate Background
+
+[Name] is a [level] software engineer with [X] years of experience at [Company]. Based in [City, Country]. Targeting [target roles description].
+
+## Key Career Highlights
+
+**Current Role: [Title], [Team/Company] ([Start Date] - Present)**
+- [Key achievement with quantified impact]
+- [Technical leadership example]
+- [Cross-team or organizational impact]
+
+**Previous Role: [Title], [Team/Company] ([Start Date] - [End Date])**
+- [Key achievement with quantified impact]
+- [System design or architecture contribution]
+- [Customer or stakeholder impact]
+
+**Earlier Career**
+- [Education: degree, school, notable achievements]
+- [Previous companies and key contributions]
+
+## Technical Depth
+- **Languages**: [e.g., Java, Python, TypeScript]
+- **Cloud**: [e.g., AWS, GCP, Azure — specific services you know well]
+- **Data & Systems**: [e.g., distributed systems, streaming pipelines, databases]
+- **Practices**: [e.g., system design, technical leadership, mentoring, CI/CD]
+
+## Strengths
+- [Strength highlighted in performance reviews or by peers]
+- [Another strength]
+
+## Growth Areas
+- [Self-identified area for improvement]
+
+## Private Cheatsheets
+
+Project-specific behavioral prep in `private/cheatsheets/`:
+
+| File | Content |
+|------|---------|
+| `example_project.md` | Cheatsheet for [project name] — key metrics, architecture decisions, talking points |
+
+## Private Company Prep
+
+Company-specific interview prep in `private/companies/`:
+
+| Directory | Content |
+|-----------|---------|
+| `example_company/` | Prep overview, frequent behavioral questions, frequent coding questions |
+
+## Documents in ./private/docs
+
+Reference materials for building behavioral stories (gitignored):
+
+| File | Content |
+|------|---------|
+| `your_resume.pdf` | Current resume |
+| `work_summary_1.md` | Work summary for [project/role] |
+| `design_doc_1.md` | Technical design doc for [system] |

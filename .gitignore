@@ -1,0 +1,10 @@
+# Private interview prep data (personal bio, docs, proprietary cheatsheets, company-specific prep)
+private/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Job scraper runtime data
+jobs_scraping/listings/

@@ -1,0 +1,180 @@
+import json
+import logging
+import os
+import sys
+
+import logging_config
+from scrapers import jobspy_scraper, remotive, wwr
+import filters
+from exporter import append_jobs, remove_jobs
+
+log = logging.getLogger(__name__)
+
+BASE_DIR = os.path.join(os.path.dirname(__file__), "..")
+LISTINGS_DIR = os.path.join(BASE_DIR, "listings")
+PENDING_PATH = os.path.join(LISTINGS_DIR, "pending_review.md")
+SCRAPED_PATH = os.path.join(LISTINGS_DIR, "already_scraped.json")
+IGNORE_PATH = os.path.join(LISTINGS_DIR, "ignored.json")
+APPLIED_PATH = os.path.join(LISTINGS_DIR, "applied.json")
+
+
+def _load_json_list(path):
+    if not os.path.exists(path):
+        return []
+    with open(path) as f:
+        return json.load(f)
+
+
+def _save_json_list(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+
+
+def _load_excluded_urls(scraped_path, ignore_path, applied_path):
+    urls = set(_load_json_list(scraped_path))
+    urls.update(_load_json_list(ignore_path))
+    urls.update(_load_json_list(applied_path))
+    return urls
+
+
+def search(
+    sources=None,
+    limit=50,
+    pending_path=PENDING_PATH,
+    scraped_path=SCRAPED_PATH,
+    ignore_path=IGNORE_PATH,
+    applied_path=APPLIED_PATH,
+):
+    if sources is None:
+        sources = ["jobspy", "remotive", "wwr"]
+
+    excluded_urls = _load_excluded_urls(scraped_path, ignore_path, applied_path)
+    log.info("Excluded URLs: %d (scraped/ignored/applied)", len(excluded_urls))
+
+    all_jobs = []
+    scrapers = {
+        "jobspy": jobspy_scraper.fetch,
+        "remotive": remotive.fetch,
+        "wwr": wwr.fetch,
+    }
+
+    for source in sources:
+        fetcher = scrapers.get(source)
+        if not fetcher:
+            continue
+        try:
+            log.info("Scraping %s...", source)
+            jobs = fetcher(limit=limit)
+            log.info("  %s returned %d jobs", source, len(jobs))
+            all_jobs.extend(jobs)
+        except Exception as e:
+            log.error("  %s scraper failed: %s", source, e)
+
+    log.info("Total scraped: %d", len(all_jobs))
+
+    new_jobs = []
+    seen_urls = set()
+    filtered = {"title": 0, "excluded": 0, "location": 0, "salary": 0}
+    for job in all_jobs:
+        url = job.get("url", "")
+        if not url or url in excluded_urls or url in seen_urls:
+            continue
+        seen_urls.add(url)
+
+        title = job.get("title", "")
+        company = job.get("company", "")
+        location = job.get("location", "")
+
+        if not filters.matches_title(title):
+            filtered["title"] += 1
+            continue
+        if filters.is_excluded(title):
+            filtered["excluded"] += 1
+            continue
+        if not filters.matches_location(location):
+            filtered["location"] += 1
+            continue
+
+        job["is_ai"] = filters.is_ai_role(title, job.get("description", ""))
+        if not filters.matches_salary(job.get("salary")):
+            filtered["salary"] += 1
+            log.info("  Salary filtered: %s - %s (%s)", company, title, job.get("salary"))
+            continue
+        new_jobs.append(job)
+
+    if new_jobs:
+        append_jobs(new_jobs, pending_path)
+        scraped = set(_load_json_list(scraped_path))
+        scraped.update(job["url"] for job in new_jobs)
+        _save_json_list(scraped_path, sorted(scraped))
+
+    with_salary = sum(1 for j in new_jobs if j.get("salary"))
+    ai_count = sum(1 for j in new_jobs if j.get("is_ai"))
+
+    log.info("--- Summary ---")
+    log.info("  Scraped:    %d total", len(all_jobs))
+    log.info("  Excluded:   %d (already scraped/ignored/applied)", len(excluded_urls))
+    log.info("  Filtered:   %d title, %d excluded role, %d location, %d salary",
+             filtered["title"], filtered["excluded"],
+             filtered["location"], filtered["salary"])
+    log.info("  New jobs:   %d", len(new_jobs))
+    log.info("  With salary: %d/%d", with_salary, len(new_jobs))
+    log.info("  AI roles:   %d/%d", ai_count, len(new_jobs))
+
+    return new_jobs
+
+
+def ignore(
+    urls,
+    pending_path=PENDING_PATH,
+    ignore_path=IGNORE_PATH,
+    scraped_path=SCRAPED_PATH,
+):
+    ignored = set(_load_json_list(ignore_path))
+    ignored.update(urls)
+    _save_json_list(ignore_path, sorted(ignored))
+
+    remove_jobs(urls, pending_path)
+
+    scraped = _load_json_list(scraped_path)
+    scraped = [u for u in scraped if u not in set(urls)]
+    _save_json_list(scraped_path, scraped)
+
+    log.info("Ignored %d jobs", len(urls))
+
+
+def apply(
+    url,
+    pending_path=PENDING_PATH,
+    applied_path=APPLIED_PATH,
+):
+    applied = set(_load_json_list(applied_path))
+    applied.add(url)
+    _save_json_list(applied_path, sorted(applied))
+
+    remove_jobs([url], pending_path)
+
+    log.info("Applied: %s", url)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    logging_config.setup()
+
+    parser = argparse.ArgumentParser(description="Job search orchestrator")
+    parser.add_argument("--source", choices=["jobspy", "remotive", "wwr", "all"], default="all")
+    parser.add_argument("--limit", type=int, default=50)
+    parser.add_argument("--ignore", nargs="+", help="URLs to ignore")
+    parser.add_argument("--apply", dest="apply_url", help="URL to mark as applied")
+
+    args = parser.parse_args()
+
+    if args.ignore:
+        ignore(args.ignore)
+    elif args.apply_url:
+        apply(args.apply_url)
+    else:
+        sources = None if args.source == "all" else [args.source]
+        search(sources=sources, limit=args.limit)

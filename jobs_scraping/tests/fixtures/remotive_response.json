@@ -1,0 +1,89 @@
+{
+  "jobs": [
+    {
+      "id": 1919265,
+      "url": "https://remotive.com/remote-jobs/software-development/senior-independent-software-developer-1919265",
+      "title": "Senior Independent Software Developer",
+      "company_name": "A.Team",
+      "company_logo": "https://remotive.com/job/1919265/logo",
+      "category": "Software Development",
+      "tags": [
+        "go",
+        "wordpress",
+        "chat",
+        "apple",
+        "testing",
+        "catalyst"
+      ],
+      "job_type": "contract",
+      "publication_date": "2026-03-16T10:16:05",
+      "candidate_required_location": "Americas, Europe, Israel",
+      "salary": "$90 - $150 /hour",
+      "description": "<p style=\"text-size-adjust: 100%; overflow-wrap: break-word;\"><em>You must be located in the America...",
+      "company_logo_url": "https://remotive.com/job/1919265/logo"
+    },
+    {
+      "id": 1919266,
+      "url": "https://remotive.com/remote-jobs/software-development/senior-independent-ai-engineer-architect-1919266",
+      "title": "Senior Independent AI Engineer / Architect",
+      "company_name": "A.Team",
+      "company_logo": "https://remotive.com/job/1919266/logo",
+      "category": "Software Development",
+      "tags": [
+        "go",
+        "UI/UX",
+        "wordpress",
+        "chat",
+        "apple",
+        "testing",
+        "catalyst"
+      ],
+      "job_type": "contract",
+      "publication_date": "2026-03-16T10:16:00",
+      "candidate_required_location": "Americas, Europe, Israel",
+      "salary": "$120 - $170 /hour",
+      "description": "<p class=\"my-2 [&amp;+p]:mt-4 [&amp;_strong:has(+br)]:inline-block [&amp;_strong:has(+br)]:pb-2\" sty...",
+      "company_logo_url": "https://remotive.com/job/1919266/logo"
+    },
+    {
+      "id": 2069746,
+      "url": "https://remotive.com/remote-jobs/software-development/tech-lead-full-stack-rails-engineer-2069746",
+      "title": "Tech Lead Full-Stack Rails Engineer",
+      "company_name": "Mitre Media",
+      "company_logo": "https://remotive.com/job/2069746/logo",
+      "category": "Software Development",
+      "tags": [
+        "api",
+        "CSS",
+        "docker",
+        "elasticsearch",
+        "fullstack",
+        "html",
+        "javascript",
+        "kubernetes",
+        "postgresql",
+        "react",
+        "ror",
+        "ruby/rails",
+        "AI/ML",
+        "CAD",
+        "advertising",
+        "Redis",
+        "ES6",
+        "web applications",
+        "MySQL",
+        "NLP",
+        "fintech",
+        "Micro services",
+        "github",
+        "system architecture"
+      ],
+      "job_type": "full_time",
+      "publication_date": "2026-03-14T20:46:36",
+      "candidate_required_location": "USA, Canada, USA timezones",
+      "salary": "$170k - $200k",
+      "description": "<p class=\"h1\" dir=\"ltr\" style=\"line-height: 1.38; background-color: #ffffff; margin-top: 24pt; margi...",
+      "company_logo_url": "https://remotive.com/job/2069746/logo"
+    }
+  ]
+}

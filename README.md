@@ -48,10 +48,10 @@ A Python-based tool that scrapes job listings from multiple boards (Indeed, Link
 ### Setup
 
 1. Fork this repo
-2. Copy `myself.md.example` to `private/myself.md` and fill in your candidate background
-3. Add your own cheatsheets in `private/cheatsheets/` (e.g., project-specific talking points, system design stories)
+2. Copy `myself.md.example` to `private/myself.md` and fill in your candidate background — **the interview coach reads this file to tailor all coaching, mocks, and feedback to your experience**
+3. Add your own cheatsheets in `private/cheatsheets/` (e.g., coding rubric, project-specific talking points, system design stories)
 4. Add company-specific prep in `private/companies/` (e.g., behavioral question prep, coding question lists)
-5. Add reference documents in `private/docs/` (e.g., resume, work summaries, design docs)
+5. Add reference documents in `private/docs/` (e.g., resume, work summaries, design docs) — the more context you provide (work summaries, design docs, performance reviews), the better the coach can help craft behavioral answers grounded in your real experience
 6. Customize job search location filters in `jobs_scraping/scripts/filters.py` and `jobs_scraping/scripts/scrapers/jobspy_scraper.py`
 
 ### Usage

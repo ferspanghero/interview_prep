@@ -267,3 +267,24 @@ class TestOrchestratorApply:
         with open(applied_path) as f:
             applied = json.load(f)
         assert applied.count("https://stripe.com/jobs/1") == 1
+
+    def test_trailing_slash_still_removes_from_pending(self, tmp_path):
+        pending = str(tmp_path / "pending_review.md")
+        applied_path = str(tmp_path / "applied.json")
+        append_jobs(
+            [{"title": "Senior SWE", "company": "Stripe", "location": "Remote",
+              "salary": "$200K", "url": "https://stripe.com/jobs/1", "source": "Indeed",
+              "posted": "2026-03-18", "is_ai": False}],
+            pending,
+        )
+        apply(url="https://stripe.com/jobs/1/", pending_path=pending, applied_path=applied_path)
+        assert "Stripe" not in open(pending).read()
+
+    def test_trailing_slash_normalized_in_applied_json(self, tmp_path):
+        pending = str(tmp_path / "pending_review.md")
+        applied_path = str(tmp_path / "applied.json")
+        apply(url="https://stripe.com/jobs/1/", pending_path=pending, applied_path=applied_path)
+        with open(applied_path) as f:
+            applied = json.load(f)
+        assert "https://stripe.com/jobs/1" in applied
+        assert "https://stripe.com/jobs/1/" not in applied

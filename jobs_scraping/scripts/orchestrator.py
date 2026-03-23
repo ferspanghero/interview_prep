@@ -7,6 +7,7 @@ import logging_config
 from scrapers import jobspy_scraper, remotive, wwr
 import filters
 from exporter import append_jobs, remove_jobs
+from utils import normalize_url
 
 log = logging.getLogger(__name__)
 
@@ -77,7 +78,8 @@ def search(
     seen_urls = set()
     filtered = {"title": 0, "excluded": 0, "location": 0, "salary": 0}
     for job in all_jobs:
-        url = job.get("url", "")
+        url = normalize_url(job.get("url", ""))
+        job["url"] = url
         if not url or url in excluded_urls or url in seen_urls:
             continue
         seen_urls.add(url)
@@ -131,6 +133,7 @@ def ignore(
     ignore_path=IGNORE_PATH,
     scraped_path=SCRAPED_PATH,
 ):
+    urls = [normalize_url(u) for u in urls]
     ignored = set(_load_json_list(ignore_path))
     ignored.update(urls)
     _save_json_list(ignore_path, sorted(ignored))
@@ -149,6 +152,7 @@ def apply(
     pending_path=PENDING_PATH,
     applied_path=APPLIED_PATH,
 ):
+    url = normalize_url(url)
     applied = set(_load_json_list(applied_path))
     applied.add(url)
     _save_json_list(applied_path, sorted(applied))

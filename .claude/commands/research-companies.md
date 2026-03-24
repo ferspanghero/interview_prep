@@ -35,6 +35,7 @@ Median = average of both scores if both exist, or the single available score if 
     "glassdoor": 4.1,
     "blind": 4.0,
     "public": true,
+    "blocked": false,
     "notes": ""
   }
 ]

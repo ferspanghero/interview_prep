@@ -17,6 +17,7 @@ PENDING_PATH = os.path.join(LISTINGS_DIR, "pending_review.md")
 SCRAPED_PATH = os.path.join(LISTINGS_DIR, "already_scraped.json")
 IGNORE_PATH = os.path.join(LISTINGS_DIR, "ignored.json")
 APPLIED_PATH = os.path.join(LISTINGS_DIR, "applied.json")
+COMPANIES_PATH = os.path.join(LISTINGS_DIR, "companies.json")
 
 
 def _load_json_list(path):
@@ -30,6 +31,14 @@ def _save_json_list(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
+
+
+def _load_blocked_companies(companies_path):
+    if not os.path.exists(companies_path):
+        return set()
+    with open(companies_path) as f:
+        companies = json.load(f)
+    return {c["company"].strip().lower() for c in companies if c.get("blocked")}
 
 
 def _load_excluded_urls(scraped_path, ignore_path, applied_path):
@@ -46,12 +55,16 @@ def search(
     scraped_path=SCRAPED_PATH,
     ignore_path=IGNORE_PATH,
     applied_path=APPLIED_PATH,
+    companies_path=COMPANIES_PATH,
 ):
     if sources is None:
         sources = ["jobspy", "remotive", "wwr"]
 
     excluded_urls = _load_excluded_urls(scraped_path, ignore_path, applied_path)
+    blocked_companies = _load_blocked_companies(companies_path)
     log.info("Excluded URLs: %d (scraped/ignored/applied)", len(excluded_urls))
+    if blocked_companies:
+        log.info("Blocked companies: %d", len(blocked_companies))
 
     all_jobs = []
     scrapers = {
@@ -76,7 +89,7 @@ def search(
 
     new_jobs = []
     seen_urls = set()
-    filtered = {"title": 0, "excluded": 0, "location": 0, "salary": 0}
+    filtered = {"blocked": 0, "title": 0, "excluded": 0, "location": 0, "salary": 0}
     for job in all_jobs:
         url = normalize_url(job.get("url", ""))
         job["url"] = url
@@ -87,6 +100,11 @@ def search(
         title = job.get("title", "")
         company = job.get("company", "")
         location = job.get("location", "")
+
+        if company.strip().lower() in blocked_companies:
+            filtered["blocked"] += 1
+            log.info("  Blocked: %s - %s", company, title)
+            continue
 
         if not filters.matches_title(title):
             filtered["title"] += 1
@@ -117,8 +135,8 @@ def search(
     log.info("--- Summary ---")
     log.info("  Scraped:    %d total", len(all_jobs))
     log.info("  Excluded:   %d (already scraped/ignored/applied)", len(excluded_urls))
-    log.info("  Filtered:   %d title, %d excluded role, %d location, %d salary",
-             filtered["title"], filtered["excluded"],
+    log.info("  Filtered:   %d blocked, %d title, %d excluded role, %d location, %d salary",
+             filtered["blocked"], filtered["title"], filtered["excluded"],
              filtered["location"], filtered["salary"])
     log.info("  New jobs:   %d", len(new_jobs))
     log.info("  With salary: %d/%d", with_salary, len(new_jobs))
@@ -162,6 +180,39 @@ def apply(
     log.info("Applied: %s", url)
 
 
+def block_company(
+    company_names,
+    companies_path=COMPANIES_PATH,
+):
+    if os.path.exists(companies_path):
+        with open(companies_path) as f:
+            companies = json.load(f)
+    else:
+        companies = []
+
+    existing = {c["company"].strip().lower(): c for c in companies}
+
+    for name in company_names:
+        key = name.strip().lower()
+        if key in existing:
+            existing[key]["blocked"] = True
+        else:
+            companies.append({
+                "company": name,
+                "glassdoor": None,
+                "blind": None,
+                "public": False,
+                "blocked": True,
+                "notes": "",
+            })
+
+    os.makedirs(os.path.dirname(companies_path), exist_ok=True)
+    with open(companies_path, "w") as f:
+        json.dump(companies, f, indent=2)
+
+    log.info("Blocked %d companies", len(company_names))
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -172,10 +223,13 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, default=50)
     parser.add_argument("--ignore", nargs="+", help="URLs to ignore")
     parser.add_argument("--apply", dest="apply_url", help="URL to mark as applied")
+    parser.add_argument("--block_company", nargs="+", help="Company names to block")
 
     args = parser.parse_args()
 
-    if args.ignore:
+    if args.block_company:
+        block_company(args.block_company)
+    elif args.ignore:
         ignore(args.ignore)
     elif args.apply_url:
         apply(args.apply_url)

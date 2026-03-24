@@ -38,7 +38,7 @@ All runtime data lives in `jobs_scraping/listings/` (gitignored):
 |------|---------|
 | `pending_review.md` | Jobs awaiting your review |
 | `applications.md` | Tracked applications with comp, status, and next steps |
-| `companies.json` | Cached company ratings and notes |
+| `companies.json` | Cached company ratings, blocklist, and notes |
 | `applied.json` | URLs marked as applied (dedup) |
 | `ignored.json` | URLs marked as ignored (dedup) |
 | `already_scraped.json` | URLs already seen by the scraper (dedup) |
@@ -48,7 +48,8 @@ All runtime data lives in `jobs_scraping/listings/` (gitignored):
 These commands run the main search-review-apply loop:
 
 - **`/search-jobs`** — scrape new listings from all job boards → adds to `pending_review.md`, updates `already_scraped.json`
-- **`/ignore-jobs`** — dismiss listings you're not interested in (e.g., `/ignore-jobs scribd, narvar`) → removes from `pending_review.md`, adds to `ignored.json`
+- **`/ignore-jobs`** — dismiss listings you're not interested in (e.g., `/ignore-jobs scribd, narvar`). Optionally block the company to filter them from future searches (e.g., `/ignore-jobs giga, block_company`) → removes from `pending_review.md`, adds to `ignored.json`, optionally updates blocklist in `companies.json`
+- **`/block-companies`** — block companies from appearing in future searches (e.g., `/block-companies giga, omnissa`) → updates blocklist in `companies.json`
 - **`/apply-to-job`** — track an application with comp, status, and next steps (e.g., `/apply-to-job https://linkedin.com/jobs/view/123`) → appends to `applications.md`, removes from `pending_review.md`, adds to `applied.json`
 
 #### On-demand enrichment

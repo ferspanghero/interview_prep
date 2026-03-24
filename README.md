@@ -1,6 +1,6 @@
 # Interview Prep
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code)-powered framework for senior/staff-level software engineering interview preparation. Includes an AI interview coach, a real-time interview assistant, a coding problem tracker with solutions, and a job search aggregator tool.
+A [Claude Code](https://docs.anthropic.com/en/docs/claude-code)-powered framework for software engineering interview prep — AI coach, real-time interview assistant, and automated job search pipeline.
 
 ## Features
 
@@ -30,12 +30,37 @@ For live interviews that allow AI assistance. Say **"assist mode"** to switch. C
 
 ### Job Search Aggregator
 
-A Python-based tool that scrapes job listings from multiple boards (Indeed, LinkedIn, Remotive, We Work Remotely), filters by criteria, deduplicates, and manages a pipeline from discovery to application. Includes Claude Code slash commands:
+A Python-based tool that scrapes job listings from multiple boards (Indeed, LinkedIn, Remotive, We Work Remotely), filters by criteria, deduplicates, and manages a pipeline from discovery to application.
 
-- `/search-jobs` — run the scraper and review new listings
-- `/ignore-jobs` — mark listings to skip
-- `/apply-to-job` — track applications
-- `/enrich-salaries` — extract salary data from job descriptions
+All runtime data lives in `jobs_scraping/listings/` (gitignored):
+
+| File | Purpose |
+|------|---------|
+| `pending_review.md` | Jobs awaiting your review |
+| `applications.md` | Tracked applications with comp, status, and next steps |
+| `companies.json` | Cached company ratings and notes |
+| `applied.json` | URLs marked as applied (dedup) |
+| `ignored.json` | URLs marked as ignored (dedup) |
+| `already_scraped.json` | URLs already seen by the scraper (dedup) |
+
+#### Core workflow
+
+These commands run the main search-review-apply loop:
+
+- **`/search-jobs`** — scrape new listings from all job boards → adds to `pending_review.md`, updates `already_scraped.json`
+- **`/ignore-jobs`** — dismiss listings you're not interested in (e.g., `/ignore-jobs scribd, narvar`) → removes from `pending_review.md`, adds to `ignored.json`
+- **`/apply-to-job`** — track an application with comp, status, and next steps (e.g., `/apply-to-job https://linkedin.com/jobs/view/123`) → appends to `applications.md`, removes from `pending_review.md`, adds to `applied.json`
+
+#### On-demand enrichment
+
+These commands are token-intensive (they make many web requests), so they run separately rather than on every search:
+
+- **`/enrich-salaries`** — fetch salary data for listings missing compensation info by scraping job posting URLs → updates salary column in `pending_review.md`
+- **`/research-companies`** — look up Glassdoor and Blind ratings for all companies in `pending_review.md` → updates `companies.json` (cached, repeat runs only fetch new companies)
+
+#### Interview prep
+
+- **`/prep-company`** — research a company's interview process and generate a prep package from a job listing URL (e.g., `/prep-company https://linkedin.com/jobs/view/123`) → creates `private/companies/<company>/` with `prep_overview.md`, `frequent_coding_questions.md`, and `frequent_behavioral_questions.md`
 
 ## Getting Started
 
@@ -68,17 +93,18 @@ All interactions are routed through the `interview-coach` agent. Just start talk
 ## Project Structure
 
 ```
-myself.md.example      # Template for private/myself.md — fill in your own background
-private/               # Gitignored — your personal data
-  myself.md            # Your candidate background (copy from myself.md.example)
-  cheatsheets/         # All cheatsheets (coding tracker, solutions rubric, behavioral prep)
-  companies/           # Your company-specific interview prep
-  docs/                # Reference materials (resume, work summaries, design docs)
-jobs_scraping/         # Job search aggregator tool
-  scripts/             # Scraper, filter, exporter, salary enricher
-  tests/               # Test suite
-  listings/            # Gitignored — runtime data (scraped jobs, applications)
-.claude/commands/      # Claude Code slash commands for job search workflow
+myself.md.example        # Template for private/myself.md — fill in your own background
+private/                 # Gitignored — your personal data
+  myself.md              # Your candidate background (copy from myself.md.example)
+  cheatsheets/           # Coding tracker, solutions rubric, behavioral prep
+  companies/             # Company-specific interview prep (created by /prep-company)
+  docs/                  # Reference materials (resume, work summaries, design docs)
+jobs_scraping/           # Job search aggregator tool
+  scripts/               # Scraper, filter, exporter, salary enricher
+  tests/                 # Test suite
+  listings/              # Gitignored — see data files table above
+.claude/commands/        # Claude Code slash commands
+.claude/agents/          # Interview coach agent definition
 ```
 
 ## License

@@ -13,14 +13,15 @@ Research Glassdoor and Blind ratings for companies in the pending review list: $
    - WebSearch `"[company] glassdoor rating"` → extract overall score (X.X out of 5)
    - WebSearch `"[company] teamblind rating"` → extract overall score (X.X out of 5)
    - Note review count and any red flags (very few reviews, low management/career-growth sub-scores, big divergence between platforms)
-   - Return results as: `Company | Glassdoor | Blind | Notes`
+   - Determine if the company is publicly traded (true/false)
+   - Return results as: `Company | Glassdoor | Blind | Public | Notes`
    - Use `null` for scores that can't be found (company too small, no profile on that platform)
 6. Merge new results into `jobs_scraping/listings/companies.json`. Existing entries are preserved unless refreshing.
 7. Display the full table sorted by median score descending:
 
 ```
-| Company | Glassdoor | Blind | Median | Notes |
-|---------|-----------|-------|--------|-------|
+| Company | Glassdoor | Blind | Median | Public | Notes |
+|---------|-----------|-------|--------|--------|-------|
 ```
 
 Median = average of both scores if both exist, or the single available score if only one exists. Companies with no scores go at the bottom.
@@ -33,6 +34,7 @@ Median = average of both scores if both exist, or the single available score if 
     "company": "Asana",
     "glassdoor": 4.1,
     "blind": 4.0,
+    "public": true,
     "notes": ""
   }
 ]

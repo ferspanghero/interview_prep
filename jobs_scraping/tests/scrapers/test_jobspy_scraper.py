@@ -90,14 +90,14 @@ class TestJobspyFetch:
     def test_returns_list(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         assert isinstance(jobs, list)
 
     @patch("jobspy_scraper.scrape_jobs")
     def test_jobs_have_required_fields(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_DATA, linkedin_data=MOCK_LINKEDIN_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         required = {"title", "company", "location", "salary", "url", "source", "posted"}
         for job in jobs:
             assert required.issubset(job.keys()), f"Missing fields: {required - job.keys()}"
@@ -106,7 +106,7 @@ class TestJobspyFetch:
     def test_returns_jobs_from_both_sources(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_DATA, linkedin_data=MOCK_LINKEDIN_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         sources = {j["source"] for j in jobs}
         assert "Indeed" in sources
         assert "LinkedIn" in sources
@@ -115,7 +115,7 @@ class TestJobspyFetch:
     def test_indeed_source_attribution(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         stripe_jobs = [j for j in jobs if j["company"] == "Stripe"]
         assert len(stripe_jobs) > 0
         assert stripe_jobs[0]["source"] == "Indeed"
@@ -124,7 +124,7 @@ class TestJobspyFetch:
     def test_linkedin_source_attribution(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(linkedin_data=MOCK_LINKEDIN_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         db_jobs = [j for j in jobs if j["company"] == "Databricks"]
         assert len(db_jobs) > 0
         assert db_jobs[0]["source"] == "LinkedIn"
@@ -148,7 +148,7 @@ class TestJobspyFetch:
         }])
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=data)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         stripe_job = [j for j in jobs if j["company"] == "Stripe"][0]
         assert stripe_job["salary"] is not None
         assert "CAD" in stripe_job["salary"]
@@ -158,7 +158,7 @@ class TestJobspyFetch:
     def test_missing_salary_is_none(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(linkedin_data=MOCK_LINKEDIN_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         db_job = [j for j in jobs if j["company"] == "Databricks"][0]
         assert db_job["salary"] is None
 
@@ -166,7 +166,7 @@ class TestJobspyFetch:
     def test_extracts_salary_from_description(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(linkedin_data=MOCK_LINKEDIN_WITH_SALARY_IN_DESC)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         grafana_job = [j for j in jobs if j["company"] == "Grafana Labs"][0]
         assert grafana_job["salary"] is not None
         assert "186,368" in grafana_job["salary"]
@@ -188,7 +188,7 @@ class TestJobspyFetch:
         }])
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=data)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         assert len(jobs) >= 1
         nan_job = [j for j in jobs if j["url"] == "https://ca.indeed.com/viewjob?jk=nan999"][0]
         assert nan_job["company"] == "Unknown"
@@ -197,7 +197,7 @@ class TestJobspyFetch:
     def test_strips_pipe_suffixes_from_title(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_WITH_PIPE)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         grafana_job = [j for j in jobs if j["company"] == "Grafana Labs"][0]
         assert "|" not in grafana_job["title"]
         assert "Grafana Cloud k6" in grafana_job["title"]
@@ -206,7 +206,7 @@ class TestJobspyFetch:
     def test_uses_direct_url_when_available(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         stripe_job = [j for j in jobs if j["company"] == "Stripe"][0]
         assert "lever.co" in stripe_job["url"]
         assert "indeed.com" not in stripe_job["url"]
@@ -215,7 +215,7 @@ class TestJobspyFetch:
     def test_linkedin_falls_back_to_job_url(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(linkedin_data=MOCK_LINKEDIN_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         db_job = [j for j in jobs if j["company"] == "Databricks"][0]
         assert "linkedin.com" in db_job["url"]
 
@@ -223,9 +223,17 @@ class TestJobspyFetch:
     def test_deduplicates_across_searches(self, mock_scrape):
         mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_DATA, linkedin_data=MOCK_LINKEDIN_DATA)
         from jobspy_scraper import fetch
-        jobs = fetch()
+        jobs = fetch(limit=50, hours_old=168)
         urls = [j["url"] for j in jobs]
         assert len(urls) == len(set(urls))
+
+    @patch("jobspy_scraper.scrape_jobs")
+    def test_passes_hours_old_to_scrape_jobs(self, mock_scrape):
+        mock_scrape.side_effect = _mock_scrape_factory(indeed_data=MOCK_INDEED_DATA)
+        from jobspy_scraper import fetch
+        fetch(limit=50, hours_old=72)
+        for call in mock_scrape.call_args_list:
+            assert call.kwargs.get("hours_old") == 72
 
     @patch("jobspy_scraper.scrape_jobs")
     def test_logs_error_on_scrape_failure(self, mock_scrape, caplog):
@@ -233,6 +241,6 @@ class TestJobspyFetch:
         from jobspy_scraper import fetch
         import logging
         with caplog.at_level(logging.ERROR):
-            jobs = fetch()
+            jobs = fetch(limit=50, hours_old=168)
         assert len(jobs) == 0
         assert "API down" in caplog.text

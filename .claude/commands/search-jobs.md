@@ -6,3 +6,4 @@ Run the job search aggregator to find new Senior/Staff SWE roles.
 
 If the user wants to filter by source, run with `--source jobspy|remotive|wwr`.
 If the user wants to limit results, run with `--limit N`.
+If the user wants to control freshness, run with `--hours_old N` (default: 168 = 7 days).

@@ -408,6 +408,58 @@ class TestOrchestratorSearchBlocked:
         assert len(new_jobs) == 1
 
 
+class TestOrchestratorSearchHoursOld:
+    @patch("scrapers.jobspy_scraper.fetch")
+    @patch("scrapers.remotive.fetch")
+    @patch("scrapers.wwr.fetch")
+    def test_passes_hours_old_to_jobspy(self, mock_wwr, mock_remotive, mock_jobspy, tmp_path):
+        mock_jobspy.return_value = []
+        mock_remotive.return_value = []
+        mock_wwr.return_value = []
+        search(
+            hours_old=72,
+            pending_path=str(tmp_path / "pending_review.md"),
+            scraped_path=str(tmp_path / "already_scraped.json"),
+            ignore_path=str(tmp_path / "ignored.json"),
+            applied_path=str(tmp_path / "applied.json"),
+            companies_path=str(tmp_path / "companies.json"),
+        )
+        mock_jobspy.assert_called_once_with(limit=50, hours_old=72)
+
+    @patch("scrapers.jobspy_scraper.fetch")
+    @patch("scrapers.remotive.fetch")
+    @patch("scrapers.wwr.fetch")
+    def test_default_hours_old_is_168(self, mock_wwr, mock_remotive, mock_jobspy, tmp_path):
+        mock_jobspy.return_value = []
+        mock_remotive.return_value = []
+        mock_wwr.return_value = []
+        search(
+            pending_path=str(tmp_path / "pending_review.md"),
+            scraped_path=str(tmp_path / "already_scraped.json"),
+            ignore_path=str(tmp_path / "ignored.json"),
+            applied_path=str(tmp_path / "applied.json"),
+            companies_path=str(tmp_path / "companies.json"),
+        )
+        mock_jobspy.assert_called_once_with(limit=50, hours_old=168)
+
+    @patch("scrapers.jobspy_scraper.fetch")
+    @patch("scrapers.remotive.fetch")
+    @patch("scrapers.wwr.fetch")
+    def test_does_not_pass_hours_old_to_remotive(self, mock_wwr, mock_remotive, mock_jobspy, tmp_path):
+        mock_jobspy.return_value = []
+        mock_remotive.return_value = []
+        mock_wwr.return_value = []
+        search(
+            hours_old=72,
+            pending_path=str(tmp_path / "pending_review.md"),
+            scraped_path=str(tmp_path / "already_scraped.json"),
+            ignore_path=str(tmp_path / "ignored.json"),
+            applied_path=str(tmp_path / "applied.json"),
+            companies_path=str(tmp_path / "companies.json"),
+        )
+        mock_remotive.assert_called_once_with(limit=50)
+
+
 class TestOrchestratorBlockCompany:
     def test_block_company_existing(self, tmp_path):
         companies_path = str(tmp_path / "companies.json")

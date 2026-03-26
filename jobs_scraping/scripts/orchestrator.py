@@ -51,6 +51,7 @@ def _load_excluded_urls(scraped_path, ignore_path, applied_path):
 def search(
     sources=None,
     limit=50,
+    hours_old=168,
     pending_path=PENDING_PATH,
     scraped_path=SCRAPED_PATH,
     ignore_path=IGNORE_PATH,
@@ -79,7 +80,10 @@ def search(
             continue
         try:
             log.info("Scraping %s...", source)
-            jobs = fetcher(limit=limit)
+            kwargs = {"limit": limit}
+            if source == "jobspy":
+                kwargs["hours_old"] = hours_old
+            jobs = fetcher(**kwargs)
             log.info("  %s returned %d jobs", source, len(jobs))
             all_jobs.extend(jobs)
         except Exception as e:
@@ -221,6 +225,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Job search orchestrator")
     parser.add_argument("--source", choices=["jobspy", "remotive", "wwr", "all"], default="all")
     parser.add_argument("--limit", type=int, default=50)
+    parser.add_argument("--hours_old", type=int, help="Only fetch jobs posted within N hours (default: 168)")
     parser.add_argument("--ignore", nargs="+", help="URLs to ignore")
     parser.add_argument("--apply", dest="apply_url", help="URL to mark as applied")
     parser.add_argument("--block_company", nargs="+", help="Company names to block")
@@ -235,4 +240,4 @@ if __name__ == "__main__":
         apply(args.apply_url)
     else:
         sources = None if args.source == "all" else [args.source]
-        search(sources=sources, limit=args.limit)
+        search(sources=sources, limit=args.limit, hours_old=args.hours_old)

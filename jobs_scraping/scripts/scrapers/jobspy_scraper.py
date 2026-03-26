@@ -1,5 +1,4 @@
 import logging
-import logging_config
 import math
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -36,13 +35,14 @@ def _clean_title(title):
     return re.split(r"\s*\|", title)[0].strip()
 
 
-def _scrape_one(term, location, site_config, limit):
+def _scrape_one(term, location, site_config, limit, hours_old):
     site = site_config["site_name"][0]
     results = scrape_jobs(
         site_name=site_config["site_name"],
         search_term=term,
         location=location,
         results_wanted=limit,
+        hours_old=hours_old,
         **site_config["extra_kwargs"],
     )
     return results, site
@@ -82,7 +82,7 @@ def _process_results(results, site_fallback):
     return jobs
 
 
-def fetch(limit=50):
+def fetch(limit, hours_old):
     all_jobs = {}
     searches = [(t, l, s) for t in SEARCH_TERMS for l in LOCATIONS for s in SITES]
     log.info("Running %d searches across Indeed + LinkedIn", len(searches))
@@ -90,7 +90,7 @@ def fetch(limit=50):
     with ThreadPoolExecutor() as pool:
         futures = {}
         for term, location, site_config in searches:
-            f = pool.submit(_scrape_one, term, location, site_config, limit)
+            f = pool.submit(_scrape_one, term, location, site_config, limit, hours_old)
             futures[f] = site_config["site_name"][0]
 
         for future in as_completed(futures):
@@ -108,11 +108,3 @@ def fetch(limit=50):
     with_salary = sum(1 for j in enriched if j.get("salary"))
     log.info("Jobspy: %d/%d jobs have salary data", with_salary, len(enriched))
     return enriched
-
-
-if __name__ == "__main__":
-    logging_config.setup()
-    results = fetch(limit=5)
-    print(f"Found {len(results)} jobs")
-    for job in results[:10]:
-        print(f"  [{job['source']}] {job['title']} | {job['company']} | {job['location']} | {job['salary']}")

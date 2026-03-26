@@ -47,7 +47,7 @@ All runtime data lives in `jobs_scraping/listings/` (gitignored):
 
 These commands run the main search-review-apply loop:
 
-- **`/search-jobs`** — scrape new listings from all job boards → adds to `pending_review.md`, updates `already_scraped.json`
+- **`/search-jobs`** — scrape new listings from all job boards → adds to `pending_review.md`, updates `already_scraped.json`. Supports flags: `--source jobspy|remotive|wwr`, `--limit N`, `--hours_old N` (default: 168 = 7 days)
 - **`/ignore-jobs`** — dismiss listings you're not interested in (e.g., `/ignore-jobs scribd, narvar`). Optionally block the company to filter them from future searches (e.g., `/ignore-jobs giga, block_company`) → removes from `pending_review.md`, adds to `ignored.json`, optionally updates blocklist in `companies.json`
 - **`/block-companies`** — block companies from appearing in future searches (e.g., `/block-companies giga, omnissa`) → updates blocklist in `companies.json`
 - **`/apply-to-job`** — track an application with comp, status, and next steps (e.g., `/apply-to-job https://linkedin.com/jobs/view/123`) → appends to `applications.md`, removes from `pending_review.md`, adds to `applied.json`

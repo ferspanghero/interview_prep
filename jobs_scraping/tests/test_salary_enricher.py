@@ -286,6 +286,24 @@ class TestExtractSalary:
         assert min(nums) == pytest.approx(145000)
         assert max(nums) == pytest.approx(190000)
 
+    # --- $X and $Y format ---
+
+    def test_dollar_and_autodesk(self):
+        text = r"For Canada\-BC based roles, we expect a starting base salary between $107,000 and $157,300\."
+        sal = extract_salary(text)
+        assert sal is not None
+        nums = extract_numbers(sal)
+        assert min(nums) == pytest.approx(107000)
+        assert max(nums) == pytest.approx(157300)
+
+    def test_dollar_and_simple(self):
+        text = "salary between $120,000 and $180,000"
+        sal = extract_salary(text)
+        assert sal is not None
+        nums = extract_numbers(sal)
+        assert min(nums) == pytest.approx(120000)
+        assert max(nums) == pytest.approx(180000)
+
     # --- $X to $Y format ---
 
     def test_dollar_to_rival(self):

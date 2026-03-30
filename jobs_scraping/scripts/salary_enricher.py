@@ -25,7 +25,7 @@ SALARY_PATTERNS = [
     # "$176,000 CAD - $200,000 CAD" (CAD after each amount)
     r'\$[\d,.]+[kK]?\s*CAD\s*[-–—]\s*\$[\d,.]+[kK]?\s*CAD',
     # "$120,000 - $150,000 CAD" or "$252,000- $308,000" or "$120,000 to $150,000"
-    r'\$[\d,.]+[kK]?\s*(?:[-–—]|\bto\b)\s*\$[\d,.]+[kK]?(?:\s*(?:CAD|USD|per year|per month|/(?:year|yr|annum|hr|month)))?',
+    r'\$[\d,.]+[kK]?\s*(?:[-–—]|\bto\b|\band\b)\s*\$[\d,.]+[kK]?(?:\s*(?:CAD|USD|per year|per month|/(?:year|yr|annum|hr|month)))?',
     # "$190K-220K" (second value may omit $, K required on both)
     r'\$[\d,.]+[kK]\s*[-–—]\s*\$?[\d,.]+[kK]',
     # "$75-85/hr" or "$90-95 per hour"

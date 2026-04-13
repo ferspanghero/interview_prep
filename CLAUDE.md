@@ -1,5 +1,7 @@
 # Interview Prep
 
+Read `README.md` for the full project overview, features, setup instructions, and structure.
+
 This project helps prepare for senior/staff-level software engineering interviews. **Every prompt in this project must be routed through the `interview-coach` agent** — no exceptions.
 
 ## How to Use
@@ -39,9 +41,21 @@ This file is gitignored — create your own when forking this repo (see `myself.
 
 See `private/cheatsheets/` for all cheatsheets (coding problem tracker, solutions rubric, project-specific behavioral prep).
 
+## Job Search Pipeline
+
+The project includes a Python-based job search aggregator in `jobs_scraping/`. See `README.md` for the full command reference and data file details. Key commands:
+
+- `/search-jobs`, `/ignore-jobs`, `/block-companies`, `/apply-to-job` — core search-review-apply loop
+- `/research-companies`, `/enrich-salaries` — on-demand enrichment (token-intensive, run separately)
+- `/prep-company` — research a company's interview process and generate a prep package in `private/companies/<company>/`
+
+Runtime data lives in `jobs_scraping/listings/` (gitignored). Source code and tests are in `jobs_scraping/scripts/` and `jobs_scraping/tests/`.
+
+"Update application" means updating a tracked application's status, comp, or next steps in `jobs_scraping/listings/applications.md`.
+
 ## Private Company Prep
 
-See `private/companies/` for company-specific interview prep materials.
+See `private/companies/` for company-specific interview prep materials (created by `/prep-company` or manually).
 
 ## Private Documents
 

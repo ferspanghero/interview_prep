@@ -26,10 +26,25 @@ Example: `$527K CAD — $217K base (CAD) + $33K bonus (15%, CAD) + $278K equity 
 
 Components may be in CAD or USD depending on the company — ask the user to clarify the currency for each component. Always convert to CAD for the total and show the original value when converted.
 
+## Format conventions
+
+When writing the row, follow these conventions strictly. The spec is the source of truth — if existing rows drift, flag them rather than mirroring them.
+
+**Status** — use exactly one of: `Applied`, `Recruiter Screen`, `HM Screen`, `Technical Screen`, `Full Loop`, `Offer`, `Rejected`, `Ghosted`, `Withdrawn`.
+
+**Location** — use one of these patterns, always including city and region for non-remote roles:
+- `Remote, <Country>` (e.g. `Remote, Canada`)
+- `Hybrid - <N> day(s)/week, <City>, <Region>` (e.g. `Hybrid - 3 days/week, Vancouver, BC`)
+- `On-site, <City>, <Region>` (e.g. `On-site, Vancouver, BC`)
+
+**Comp range** — ranges use ASCII hyphen: `$211K-$240K`. Em-dash separates the total from the breakdown: `$527K CAD — $217K base (CAD) + $33K bonus (15%, CAD) + $278K equity ($206K USD × 1.35)`.
+
+**Link** — format as `[Link](<url>)`.
+
 ## Step 2: Track the application
+
+Before writing the row, re-read the existing `jobs_scraping/listings/applications.md` and verify each field in the new row matches the format conventions above. If any existing rows violate the conventions, do NOT copy them — flag them to the user separately.
 
 Once confirmed:
 1. Append a new row to `jobs_scraping/listings/applications.md` with the details
 2. Run: `python3 jobs_scraping/scripts/orchestrator.py --apply <url>` to remove from pending_review and mark as applied
-
-Valid statuses: Applied, Recruiter Screen, HM Screen, Technical Screen, Full Loop, Offer, Rejected, Ghosted, Withdrawn

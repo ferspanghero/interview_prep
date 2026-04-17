@@ -37,6 +37,11 @@ Switch back to coach mode by saying **"coach mode"**.
 See `private/myself.md` for candidate background, career history, and technical depth.
 This file is gitignored — create your own when forking this repo (see `myself.md.example` in the repo root).
 
+## Interview Feedback
+
+See `private/interview_feedback.md` for feedback received from past interview rounds — named gaps, interpretation, and remediation actions. Use this to identify recurring weaknesses to drill against before upcoming rounds.
+This file is gitignored — create your own when forking this repo (see `interview_feedback.md.example` in the repo root).
+
 ## Cheatsheets
 
 See `private/cheatsheets/` for all cheatsheets (coding problem tracker, solutions rubric, project-specific behavioral prep).

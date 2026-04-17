@@ -1,0 +1,54 @@
+# Interview Feedback
+
+Rejection feedback received from interview processes. Use this to identify recurring gaps and drill against them.
+
+---
+
+## [Company] — [Role] ([Date of round, rejected [Date of rejection])
+
+### Verbatim feedback
+
+> [Paste the exact feedback received from the recruiter or hiring manager. If multiple themes, quote each one separately.]
+
+> [Additional theme or dimension, verbatim.]
+
+### Interpretation
+
+Named gaps, each tied to a specific moment in the interview:
+
+1. **[Gap name, e.g., "Independent prioritization + quantified metrics"]** — [2–3 sentences connecting the feedback to what actually happened in the round. Be specific about which story, which question, which answer triggered the signal.]
+
+2. **[Gap name, e.g., "Query performance analysis"]** — [What I actually said or did that created the gap. What the correct answer would have looked like.]
+
+3. **[Gap name, e.g., "Narrating reasoning under ambiguity"]** — [Interview-technique vs. knowledge gap. How this shows up in rounds.]
+
+### Remediation
+
+- **[Artifact changed]** — [e.g., "Migration story rewritten in cheatsheets/xyz.md — new spine, metrics I chose, trade-off structure."]
+- **Pending before [next interview date]:** [Concrete follow-ups, e.g., "fill [TK] placeholders with real before/after numbers."]
+- **Drill topics:** [Specific reflexes to build — e.g., "index reasoning on every schema; Big-O before moving on."]
+
+---
+
+## [Company] — [Role] ([Date], rejected)
+
+### Feedback
+
+No written feedback received. Self-diagnosed from post-screen reflection.
+
+### Interpretation
+
+[What you remember about where it went wrong. Specific moments, not vague impressions.]
+
+### Remediation
+
+- [Drill or artifact to update.]
+- [Company prep folder reference if relevant.]
+
+---
+
+## Patterns across rejections
+
+- [Cross-cutting pattern, e.g., "Two of three rejections were at tech screen, not resume screen — past the resume bar, not past execution-under-time-pressure bar."]
+- [Recurring theme across companies, e.g., "Ambiguity navigation + metric ownership — same themes will show up at the next staff-level loop."]
+- [Filter-type vs. skill-type rejections — separate them so you don't over-drill on things that weren't real signals.]

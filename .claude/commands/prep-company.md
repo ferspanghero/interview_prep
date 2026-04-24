@@ -12,6 +12,7 @@ Use WebSearch to find recent (last 12 months) interview experiences for this com
 - `"[company] [level] software engineer interview experience"` on Glassdoor, Blind, LeetCode Discuss, Levels.fyi
 - `"[company] interview process software engineer"` for official process descriptions
 - `"[company] coding interview questions"` for reported problems
+- `"[company] system design interview"` for reported system design themes (skip if the process has no system design round)
 
 Synthesize findings into actionable prep — not a link dump.
 
@@ -44,6 +45,14 @@ Common behavioral questions for this company, with:
 - The question
 - Company-specific framing tips (e.g., growth mindset signals, collaboration emphasis, leadership principles)
 - If `private/myself.md` exists, suggest which candidate story maps best to each question
+
+### frequent_system_design_questions.md (if the process includes system design rounds)
+
+System design questions/themes reported at this company and level, with:
+- The question or theme
+- Typical scope (functional + non-functional requirements)
+- Company-specific flavor (domain, scale, evaluation criteria — e.g., real-time streaming, consistency trade-offs, multi-tenancy)
+- If `private/myself.md` exists, suggest which candidate project maps best as a reference frame
 
 ## Step 4: Summary
 

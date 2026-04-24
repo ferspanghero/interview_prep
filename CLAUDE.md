@@ -44,7 +44,7 @@ This file is gitignored — create your own when forking this repo (see `intervi
 
 ## Cheatsheets
 
-See `private/cheatsheets/` for all cheatsheets (coding problem tracker, solutions rubric, project-specific behavioral prep).
+See `private/cheatsheets/` for rehearsal-ready cheatsheets (coding, system design, behavioral, probing-question playbooks).
 
 ## Job Search Pipeline
 

@@ -61,7 +61,7 @@ These commands are token-intensive (they make many web requests), so they run se
 
 #### Interview prep
 
-- **`/prep-company`** — research a company's interview process and generate a prep package from a job listing URL (e.g., `/prep-company https://linkedin.com/jobs/view/123`) → creates `private/companies/<company>/` with `prep_overview.md`, `frequent_coding_questions.md`, and `frequent_behavioral_questions.md`
+- **`/prep-company`** — research a company's interview process and generate a prep package from a job listing URL (e.g., `/prep-company https://linkedin.com/jobs/view/123`) → creates `private/companies/<company>/` with `prep_overview.md`, `frequent_coding_questions.md`, `frequent_behavioral_questions.md`, and `frequent_system_design_questions.md`
 
 ## Getting Started
 
@@ -75,10 +75,11 @@ These commands are token-intensive (they make many web requests), so they run se
 
 1. Fork this repo
 2. Copy `myself.md.example` to `private/myself.md` and fill in your candidate background — **the interview coach reads this file to tailor all coaching, mocks, and feedback to your experience**
-3. Add your own cheatsheets in `private/cheatsheets/` (e.g., coding rubric, project-specific talking points, system design stories)
-4. Add company-specific prep in `private/companies/` (e.g., behavioral question prep, coding question lists)
-5. Add reference documents in `private/docs/` (e.g., resume, work summaries, design docs) — the more context you provide (work summaries, design docs, performance reviews), the better the coach can help craft behavioral answers grounded in your real experience
-6. Customize job search location filters in `jobs_scraping/scripts/filters.py` and `jobs_scraping/scripts/scrapers/jobspy_scraper.py`
+3. (Optional) Copy `interview_feedback.md.example` to `private/interview_feedback.md` to log feedback from past interviews — the coach uses this to drill against recurring weaknesses
+4. Add your own cheatsheets in `private/cheatsheets/` (e.g., coding rubric, project-specific talking points, system design stories)
+5. Add company-specific prep in `private/companies/` (e.g., behavioral question prep, coding question lists)
+6. Add reference documents in `private/docs/` (e.g., resume, work summaries, design docs) — the more context you provide (work summaries, design docs, performance reviews), the better the coach can help craft behavioral answers grounded in your real experience
+7. Customize job search location filters in `jobs_scraping/scripts/filters.py` and `jobs_scraping/scripts/scrapers/jobspy_scraper.py`
 
 ### Usage
 
@@ -94,12 +95,14 @@ All interactions are routed through the `interview-coach` agent. Just start talk
 ## Project Structure
 
 ```
-myself.md.example        # Template for private/myself.md — fill in your own background
-private/                 # Gitignored — your personal data
-  myself.md              # Your candidate background (copy from myself.md.example)
-  cheatsheets/           # Coding tracker, solutions rubric, behavioral prep
-  companies/             # Company-specific interview prep (created by /prep-company)
-  docs/                  # Reference materials (resume, work summaries, design docs)
+myself.md.example              # Template for private/myself.md — fill in your own background
+interview_feedback.md.example  # Template for private/interview_feedback.md — log interview feedback
+private/                       # Gitignored — your personal data
+  myself.md                    # Your candidate background (copy from myself.md.example)
+  interview_feedback.md        # Feedback from past interviews (copy from interview_feedback.md.example)
+  cheatsheets/                 # Rehearsal-ready cheatsheets (coding, system design, behavioral, probing-question playbooks)
+  companies/                   # Company-specific interview prep (created by /prep-company)
+  docs/                        # Reference materials (resume, work summaries, design docs)
 jobs_scraping/           # Job search aggregator tool
   scripts/               # Scraper, filter, exporter, salary enricher
   tests/                 # Test suite

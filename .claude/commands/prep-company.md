@@ -9,16 +9,27 @@ Look in `private/companies/` for an existing directory matching the company name
 ## Step 2: Research the company's interview process
 
 Use WebSearch to find recent (last 12 months) interview experiences for this company and level. Search for:
-- `"[company] [level] software engineer interview experience"` on Glassdoor, Blind, LeetCode Discuss, Levels.fyi
+- `"[company] [level] software engineer interview experience"` on Glassdoor, Blind, LeetCode Discuss, Levels.fyi, PracHub, interviewing.io, Reddit (r/cscareerquestions, r/leetcode)
 - `"[company] interview process software engineer"` for official process descriptions
 - `"[company] coding interview questions"` for reported problems
 - `"[company] system design interview"` for reported system design themes (skip if the process has no system design round)
+- `"[company] AI assistant interview policy"` and `"[company] Copilot ChatGPT interview allowed"` for AI-use policy on technical rounds
 
-Synthesize findings into actionable prep — not a link dump.
+Synthesize findings into actionable prep — not a link dump. Tag each reported coding/system-design problem with `[sources: N]` so single-source claims are visibly weaker than multi-source ones. Drill priority should reflect source count, not just recency.
 
-## Step 3: Create prep files
+If a public AI policy is found, document it in `prep_overview.md`. If not, auto-insert this recruiter-email template:
 
-Create a directory `private/companies/[company]/` with these files:
+> *Quick clarification before the technical rounds — are AI coding assistants (e.g., Copilot, Claude, ChatGPT) permitted during the OA / pair programming / final loop? Want to make sure I'm prepped the right way.*
+
+Default assumption if no answer: no AI permitted.
+
+If the recruiter has named a coding platform (CoderPad, HackerRank, CodeSignal, Karat), note it in `prep_overview.md`. Platform-specific tactical rules live in `private/cheatsheets/interview_platforms.md` and are read separately.
+
+## Step 3: Create or update prep files
+
+If the directory already exists, refresh the prep cleanly: re-run the searches, merge new findings into the existing files, and replace any stale or contradicted information with current data. The document must read as a single coherent up-to-date prep — no NEW/OLD markers, no leftover sections from prior scans, no duplicated entries. Preserve hand-edited rehearsal notes.
+
+For first-time creation, create a directory `private/companies/[company]/` with these files:
 
 ### prep_overview.md
 
@@ -27,7 +38,7 @@ Create a directory `private/companies/[company]/` with these files:
 3. **Interview process**: Full pipeline with stages, format, duration, and focus for each round
 4. **Behavioral questions to practice**: Sourced from candidate reports. If `private/myself.md` exists, map questions to the candidate's stories.
 5. **Technical focus areas**: Patterns, topics, and system design themes reported for this company and level
-6. **Prep timeline**: If an interview date is known, a day-by-day prep plan leading up to it
+6. **Prep priorities**: A ranked list of what to drill, ordered by importance (highest-leverage gaps first). No day-by-day timeline unless the user explicitly asks for one. The prep package must stand alone — do not reference other companies, other interviews, or scheduling conflicts across companies. Each company prep lives in isolation.
 
 ### frequent_coding_questions.md
 
